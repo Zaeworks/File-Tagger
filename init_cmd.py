@@ -1,3 +1,4 @@
+# -*- encoding: utf-8 -*-
 # init via cmd
 
 import fileTagger
@@ -28,7 +29,9 @@ def search(args=None):
 
 
 def quickadd(path):
-    print("fileTagger > 快速标签 > " + path)
+    # path = path.encode('gbk', 'ignore').decode('gbk')
+    os.system("title FileTagger - " + path)
+    print("快速标签 > " + os.path.basename(translate(path)))
     print("多个标签用空格隔开,如移除标签请使用--r参数")
     tags = getVaildInput("请输入标签:")
     fTagger = fileTagger.FileTagger()
@@ -43,7 +46,7 @@ def quickadd(path):
 
 
 def cmdControl():
-    cmd = getVaildInput("\nfileTagger > ")
+    cmd = getVaildInput("\nFileTagger > ")
     if cmd[0] == "search":
         search(cmd[1:])
     elif cmd[0] == "open":
@@ -87,15 +90,20 @@ def makeTempList(newlist):
         tempList[i + 1] = newlist[i]
 
 
+def translate(path):
+    return path.encode('gbk', 'ignore').decode('gbk')
+
+
 if __name__ == "__main__":
-    print(" > File Tagger - 标签式资源管理器")
-    print(" > Author: 扎易@Zaeworks")
-    print(" > 输入help查看帮助")
     argv = sys.argv
     FILEPATH = argv[0]
+    os.system("title File Tagger")
     if argv[1:] and argv[1] == "quickadd":
         # quickadd(argv[3], True if argv[2] == "file" else False)
         quickadd(' '.join(argv[2:]))
     else:
+        print(" > File Tagger - 标签式资源管理器")
+        print(" > Author: 扎易@Zaeworks")
+        print(" > 输入help查看帮助")
         while cmdControl() is not True:
             pass
