@@ -21,7 +21,7 @@ setup.py|用于打包成exe文件(依赖py2exe模块)
 #### 可执行版本(exe)
 获取代码, 运行setup.py可打包成exe文件(需要py2exe模块支持)
 
-或者直接从TODO下载,当前版本:TODO
+或者直接从http://pan.baidu.com/s/1dDug8ZR下载,当前版本:5
 
 #### Python
 获取代码, 直接运行init_cmd.py
