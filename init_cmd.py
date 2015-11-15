@@ -31,31 +31,21 @@ def search(args=None):
 
 
 def quickadd(path):
-    # path = path.encode('gbk', 'ignore').decode('gbk')
+    # path = path.encode('gbk', 'ignore').decode('gbk') -- 弥天巨坑之编码
     os.system("title FileTagger - " + path)
     print("快速标签 > " + os.path.basename(translate(path)))
     print("多个标签用空格隔开,如移除标签请使用--r参数")
     tags = getVaildInput("请输入标签:")
-    fTagger = fileTagger.FileTagger()
-    isFile = os.path.isfile(path)
-    func = fTagger.addTagToFile if isFile else fTagger.addTagToDir
-    if tags[0] == "--r":
-        tags = tags[1:]
-        func = fTagger.removeTagFromFile if isFile else fTagger.removeTagToDir
-    for tag in tags:
-        func(path, tag)
+    add, tags = (False, tags[1:]) if tags[0] == "--r" else (True, tags)
+    [FileTagger.setTagToFile(path, tag, add) for tag in tags]
     input("操作完毕,按回车键退出")
 
 
 def addDirTag(tags=None):
     if tags:
-        add = True
-        if tags[0] == "--r":
-            add = False
-            tags = tags[1:]
-        func = FileTagger.addTagToDir if add else FileTagger.removeTagToDir
+        add, tags = (False, tags[1:]) if tags[0] == "--r" else (True, tags)
         path = os.path.abspath("")
-        [func(path, tag) for tag in tags]
+        [FileTagger.setTagToDir(path, tag, add) for tag in tags]
         print("操作完毕.")
     else:
         print("使用 > tag (--r) 标签1 (标签2) (...)")

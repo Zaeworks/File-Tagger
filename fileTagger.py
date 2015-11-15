@@ -35,29 +35,16 @@ class FileTagger(object):
         self.resourceManager = ResourceManager()
         FileTagger.instance = self
 
-    def addTagToFile(self, path, tag):
+    def setTagToFile(self, path, tag, add=True):
         fileRes = self.getResource(path)
         if fileRes:
-            fileRes.setTag(tag)
+            fileRes.setTag(tag, add)
             fileRes.save()
 
-    def removeTagFromFile(self, path, tag):
-        fileRes = self.getResource(path)
-        if fileRes:
-            fileRes.setTag(tag, False)
-            fileRes.save()
-
-    def addTagToDir(self, path, tag):
+    def setTagToDir(self, path, tag, add=True):
         tagger = self.taggerManager.registerTagger(path)
-        tagger.setDirTag(tag)
+        tagger.setDirTag(tag, add)
         tagger.save()
-        pass
-
-    def removeTagToDir(self, path, tag):
-        tagger = self.taggerManager.registerTagger(path)
-        tagger.setDirTag(tag, False)
-        tagger.save()
-        pass
 
     def search(self, tags, mode="and", path=None):
         results = []
