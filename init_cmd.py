@@ -8,6 +8,8 @@ import reg
 
 tempList = {}
 
+FileTagger = fileTagger.FileTagger.getInstance()
+
 
 def search(args=None):
     if args:
@@ -45,9 +47,23 @@ def quickadd(path):
     input("操作完毕,按回车键退出")
 
 
+def addDirTag(tags=None):
+    if tags:
+        add = True
+        if tags[0] == "--r":
+            add = False
+            tags = tags[1:]
+        func = FileTagger.addTagToDir if add else FileTagger.removeTagToDir
+        path = os.path.abspath("")
+        [func(path, tag) for tag in tags]
+        print("操作完毕.")
+
+
 def cmdControl():
     cmd = getVaildInput("\nFileTagger > ")
-    if cmd[0] == "search":
+    if cmd[0] == "tag":
+        addDirTag(cmd[1:])
+    elif cmd[0] == "search":
         search(cmd[1:])
     elif cmd[0] == "open":
         index = int(cmd[1])
@@ -66,7 +82,8 @@ def cmdControl():
         text += " > {info}".format(info=info) if info else ""
         print(text)
     elif cmd[0] == "help":
-        print("""search > 按标签搜索
+        print("""tag > 给当前目录添加/移除标签
+search > 按标签搜索
 open > 快速打开搜索结果中的匹配项
 reg/unreg > 开关快速标签功能(管理员)
 exit > 退出""")
@@ -102,7 +119,13 @@ if __name__ == "__main__":
         # quickadd(argv[3], True if argv[2] == "file" else False)
         quickadd(' '.join(argv[2:]))
     else:
-        print(" > File Tagger - 标签式资源管理器")
+        if argv[1:] and argv[1] == "manage":
+            currentPath = ' '.join(argv[2:])
+        else:
+            currentPath = os.path.abspath("")
+        os.chdir(currentPath)
+        os.system("title File Tagger - " + currentPath)
+        print(" > File Tagger - 管理目录")
         print(" > Author: 扎易@Zaeworks")
         print(" > 输入help查看帮助")
         while cmdControl() is not True:
