@@ -23,17 +23,22 @@ def regedit(act, path=None):
 
 
 def reg(path):
-    if path[-3:] == ".py":
-        command = "python {path} quickadd %1".format(path=path)
-    else:
-        command = "{path} quickadd %1".format(path=path)
+    runPath = "python " if path[-3:] == ".py" else ""
+    runPath += '"{path}"'.format(path=path)
 
-    for regPath in ["*\shell", "Directory\shell"]:
-        key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, regPath)
-        key = winreg.CreateKey(key, "File Tagger")
-        winreg.SetValue(key, "", 1, "添加/移除标签...")
-        key = winreg.CreateKey(key, "Command")
-        winreg.SetValue(key, "", 1, command)
+    command = "{run} quickadd %1".format(run=runPath)
+    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "*\shell")
+    key = winreg.CreateKey(key, "File Tagger")
+    winreg.SetValue(key, "", 1, "添加/移除标签...")
+    key = winreg.CreateKey(key, "Command")
+    winreg.SetValue(key, "", 1, command)
+
+    command = "{run} manage %1".format(run=runPath)
+    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "Directory\shell")
+    key = winreg.CreateKey(key, "File Tagger")
+    winreg.SetValue(key, "", 1, "标签式管理...")
+    key = winreg.CreateKey(key, "Command")
+    winreg.SetValue(key, "", 1, command)
 
 
 def unreg():
