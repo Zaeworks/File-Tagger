@@ -57,6 +57,9 @@ def addDirTag(tags=None):
         path = os.path.abspath("")
         [func(path, tag) for tag in tags]
         print("操作完毕.")
+    else:
+        print("使用 > tag (--r) 标签1 (标签2) (...)")
+        print("输入--r可移除指定标签.")
 
 
 def cmdControl():
