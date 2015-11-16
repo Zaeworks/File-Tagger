@@ -34,7 +34,7 @@ def reg(path):
     winreg.SetValue(key, "", 1, command)
 
     command = "{run} manage %1".format(run=runPath)
-    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "Directory\shell")
+    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "Folder\shell")
     key = winreg.CreateKey(key, "File Tagger")
     winreg.SetValue(key, "", 1, "标签式管理...")
     key = winreg.CreateKey(key, "Command")
@@ -48,7 +48,7 @@ def unreg():
     winreg.DeleteKey(key, "File Tagger")
 
     key = winreg.OpenKey(
-        winreg.HKEY_CLASSES_ROOT, "Directory\shell\File Tagger")
+        winreg.HKEY_CLASSES_ROOT, "Folder\shell\File Tagger")
     winreg.DeleteKey(key, "Command")
-    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "Directory\shell")
+    key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "Folder\shell")
     winreg.DeleteKey(key, "File Tagger")
