@@ -250,38 +250,8 @@ class TagManager(object):
 
     """Class to manage tags"""
 
-    def __init__(self):
-        super(TagManager, self).__init__()
-        self.__tags = []
-        self.__indexBox = {}
-
-    def registerTag(self, name):
-        if name not in self.__indexBox:
-            return self.addTag(name)
-        return self.__indexBox[name]
-
-    def addTag(self, name):
-        tag = Tag(name)
-        self.__tags.append(tag)
-        self.__indexBox.update({name: tag, tag: name})
-        return tag
-
     def parse(text):
-        tags = text.split(';')
-        tags.remove("") if "" in tags else False
-        return tags
+        return [tag for tag in filter(None, text.split(';'))]
 
     def convert(tags):
-        tagText = ""
-        for tag in tags:
-            tagText += tag + ";"
-        return tagText
-
-
-class Tag(object):
-
-    """Tag Class"""
-
-    def __init__(self, name):
-        super(Tag, self).__init__()
-        self.name = name
+        return ';'.join(tags)
