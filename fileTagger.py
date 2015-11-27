@@ -166,6 +166,12 @@ class Tagger(object):
         if not add and tag in self.__tags:
             self.__tags.remove(tag)
 
+    def setDirTags(self, tags):
+        self.__tags = tags.copy()
+
+    def getDirTags(self):
+        return self.__tags.copy()
+
     def search(self, tags, mode="and"):
         if isinstance(tags, str):
             tags = [tags]
@@ -237,6 +243,9 @@ class Resource(object):
 
     def getTags(self):
         return self.tags.copy()
+
+    def setTags(self, tags):
+        self.tags = tags.copy()
 
     def hasTag(self, tag):
         return True if tag in self.tags else False
