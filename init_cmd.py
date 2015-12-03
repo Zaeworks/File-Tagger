@@ -108,11 +108,11 @@ if __name__ == "__main__":
     argv = sys.argv
     FILEPATH = argv[0]
     os.system("title File Tagger")
-    if argv[1:] and argv[1] == "quickadd":
+    if argv[1:] and argv[1] == "-a" and argv[2] == '-f':
         # quickadd(argv[3], True if argv[2] == "file" else False)
         quickadd(' '.join(argv[2:]))
     else:
-        if argv[1:] and argv[1] == "manage":
+        if argv[1:] and argv[1] == "-m":
             currentPath = ' '.join(argv[2:])
         else:
             currentPath = os.path.abspath("")

@@ -26,14 +26,14 @@ def reg(path):
     runPath = "python " if path[-3:] == ".py" else ""
     runPath += '"{path}"'.format(path=path)
 
-    command = "{run} quickadd %1".format(run=runPath)
+    command = "{run} -a -f %1".format(run=runPath)
     key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "*\shell")
     key = winreg.CreateKey(key, "File Tagger")
     winreg.SetValue(key, "", 1, "添加/移除标签...")
     key = winreg.CreateKey(key, "Command")
     winreg.SetValue(key, "", 1, command)
 
-    command = "{run} manage %1".format(run=runPath)
+    command = "{run} -m %1".format(run=runPath)
     key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "Folder\shell")
     key = winreg.CreateKey(key, "File Tagger")
     winreg.SetValue(key, "", 1, "标签式管理...")
