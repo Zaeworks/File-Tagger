@@ -67,3 +67,19 @@ def unreg():
     key = winreg.OpenKey(
         winreg.HKEY_CLASSES_ROOT, "Directory\Background\shell")
     winreg.DeleteKey(key, "File Tagger")
+
+
+def check():
+    keys = ["*\shell\File Tagger", "Folder\shell\File Tagger",
+            "Directory\Background\shell\File Tagger"]
+    registered, permission = True, True
+    try:
+        [winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, key) for key in keys]
+    except FileNotFoundError:
+        registered = False
+
+    try:
+        winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, keys[0], access=winreg.KEY_WRITE)
+    except PermissionError:
+        permission = False
+    return registered, permission
