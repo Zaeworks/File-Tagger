@@ -1,0 +1,92 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'ui_manage.ui'
+#
+# Created by: PyQt5 UI code generator 5.5.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PyQt5 import QtCore, QtGui, QtWidgets
+
+class Ui_Manage(object):
+    def setupUi(self, Manage):
+        Manage.setObjectName("Manage")
+        Manage.resize(721, 485)
+        Manage.setToolTip("")
+        Manage.setStyleSheet("#Manage{background-color: rgb(255, 255, 255)}")
+        self.searchEdit = QtWidgets.QLineEdit(Manage)
+        self.searchEdit.setGeometry(QtCore.QRect(20, 110, 551, 31))
+        self.searchEdit.setObjectName("searchEdit")
+        self.searchBox = QtWidgets.QComboBox(Manage)
+        self.searchBox.setGeometry(QtCore.QRect(570, 110, 61, 31))
+        self.searchBox.setWhatsThis("")
+        self.searchBox.setObjectName("searchBox")
+        self.searchBox.addItem("")
+        self.searchBox.addItem("")
+        self.searchButton = QtWidgets.QPushButton(Manage)
+        self.searchButton.setGeometry(QtCore.QRect(640, 110, 61, 31))
+        self.searchButton.setObjectName("searchButton")
+        self.searchList = QtWidgets.QTreeWidget(Manage)
+        self.searchList.setGeometry(QtCore.QRect(20, 150, 681, 281))
+        self.searchList.setObjectName("searchList")
+        self.manageButton = QtWidgets.QPushButton(Manage)
+        self.manageButton.setEnabled(False)
+        self.manageButton.setGeometry(QtCore.QRect(610, 440, 93, 31))
+        self.manageButton.setObjectName("manageButton")
+        self.editButton = QtWidgets.QPushButton(Manage)
+        self.editButton.setEnabled(False)
+        self.editButton.setGeometry(QtCore.QRect(510, 440, 93, 31))
+        self.editButton.setObjectName("editButton")
+        self.openButton = QtWidgets.QPushButton(Manage)
+        self.openButton.setEnabled(False)
+        self.openButton.setGeometry(QtCore.QRect(410, 440, 93, 31))
+        self.openButton.setObjectName("openButton")
+        self.pathLabel = QtWidgets.QLabel(Manage)
+        self.pathLabel.setGeometry(QtCore.QRect(20, 20, 681, 21))
+        self.pathLabel.setObjectName("pathLabel")
+        self.tagTextLabel = QtWidgets.QLabel(Manage)
+        self.tagTextLabel.setGeometry(QtCore.QRect(21, 50, 51, 21))
+        self.tagTextLabel.setObjectName("tagTextLabel")
+        self.tagLabel = QtWidgets.QLabel(Manage)
+        self.tagLabel.setGeometry(QtCore.QRect(79, 50, 621, 21))
+        self.tagLabel.setObjectName("tagLabel")
+        self.tagEditLabel = QtWidgets.QLabel(Manage)
+        self.tagEditLabel.setGeometry(QtCore.QRect(80, 70, 101, 21))
+        self.tagEditLabel.setScaledContents(False)
+        self.tagEditLabel.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignTop)
+        self.tagEditLabel.setOpenExternalLinks(False)
+        self.tagEditLabel.setTextInteractionFlags(QtCore.Qt.LinksAccessibleByMouse)
+        self.tagEditLabel.setObjectName("tagEditLabel")
+        self.aboutLabel = QtWidgets.QLabel(Manage)
+        self.aboutLabel.setGeometry(QtCore.QRect(30, 445, 161, 21))
+        self.aboutLabel.setOpenExternalLinks(True)
+        self.aboutLabel.setObjectName("aboutLabel")
+        self.regBox = QtWidgets.QCheckBox(Manage)
+        self.regBox.setEnabled(False)
+        self.regBox.setGeometry(QtCore.QRect(210, 450, 141, 16))
+        self.regBox.setObjectName("regBox")
+
+        self.retranslateUi(Manage)
+        QtCore.QMetaObject.connectSlotsByName(Manage)
+
+    def retranslateUi(self, Manage):
+        _translate = QtCore.QCoreApplication.translate
+        Manage.setWindowTitle(_translate("Manage", "标签式管理 - File Tagger"))
+        self.searchBox.setToolTip(_translate("Manage", "<html><head/><body><p>匹配含有所有指定标签的资源</p><p>and: 匹配所有指定标签</p><p>or: 匹配任一指定标签</p></body></html>"))
+        self.searchBox.setItemText(0, _translate("Manage", "and"))
+        self.searchBox.setItemText(1, _translate("Manage", "or"))
+        self.searchButton.setText(_translate("Manage", "搜索"))
+        self.searchList.headerItem().setText(0, _translate("Manage", "名称"))
+        self.searchList.headerItem().setText(1, _translate("Manage", "类型"))
+        self.searchList.headerItem().setText(2, _translate("Manage", "标签"))
+        self.manageButton.setText(_translate("Manage", "管理..."))
+        self.editButton.setText(_translate("Manage", "修改..."))
+        self.openButton.setText(_translate("Manage", "打开"))
+        self.pathLabel.setText(_translate("Manage", "path"))
+        self.tagTextLabel.setText(_translate("Manage", "标签: "))
+        self.tagLabel.setText(_translate("Manage", "tags"))
+        self.tagEditLabel.setText(_translate("Manage", "<html><head/><body><p><a href=\" \"><span style=\" text-decoration: underline; color:#0000ff;\">修改标签...</span></a></p></body></html>"))
+        self.aboutLabel.setText(_translate("Manage", "<html><head/><body><p><a href=\"https://github.com/Zaeworks/File-Tagger\"><span style=\" text-decoration: underline; color:#8c8c8c;\">File Tagger@扎易作品</span></a></p></body></html>"))
+        self.regBox.setToolTip(_translate("Manage", "需要管理员权限修改注册表"))
+        self.regBox.setText(_translate("Manage", "添加至右键菜单"))
+
