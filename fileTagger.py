@@ -264,3 +264,55 @@ class TagManager(object):
 
     def convert(tags):
         return ';'.join(tags)
+
+
+class BaseResource(object):
+
+    """Base file/folder resource class"""
+
+    def __init__(self, path, isFile):
+        self.path = os.path.abspath(path)
+        self.basename = os.path.basename(path)
+        self.taggerPath = os.path.dirname(self.path) if isFile else self.path
+        taggerManager = FileTagger.getInstance().taggerManager
+        self.tagger = taggerManager.registerTagger(self.taggerPath)
+
+    def save(self):
+        pass
+
+    def setTag(self, tag, add=True):
+        self.tags.append(tag) if add and not self.hasTag(tag) else False
+        self.tags.remove(tag) if self.hasTag(tag) and not add else False
+
+    def getTags(self):
+        return self.tags.copy()
+
+    def setTags(self, tags):
+        self.tags = tags.copy()
+
+    def hasTag(self, tag):
+        return tag in self.tags
+
+
+class File(BaseResource):
+
+    """File resource class"""
+
+    def __init__(self, path):
+        super(File, self).__init__(path, True)
+        self.tags = self.tagger.getTags(self.basename)
+
+    def save(self):
+        pass
+
+
+class Folder(BaseResource):
+
+    """Folder resource class"""
+
+    def __init__(self, path):
+        super(File, self).__init__(path, False)
+        self.tags = self.tagger.getDirTags()
+
+    def save(self):
+        pass
