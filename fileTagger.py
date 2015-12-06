@@ -157,8 +157,8 @@ class Tagger(object):
             self.__config.set("Tags", filename, tags)
         elif isinstance(tags, (list)):
             tagText = TagManager.convert(tags)
-            # print(tagText)
             self.__config.set("Tags", filename, tagText)
+        self.save()
 
     def setDirTag(self, tag, add=True):
         if add and tag not in self.__tags:
@@ -168,6 +168,7 @@ class Tagger(object):
 
     def setDirTags(self, tags):
         self.__tags = tags.copy()
+        self.save()
 
     def getDirTags(self):
         return self.__tags.copy()
@@ -266,16 +267,44 @@ class TagManager(object):
         return ';'.join(tags)
 
 
+class BaseResourceManager(object):
+
+    """New resource manager"""
+
+    def __init__(self):
+        self.resources = []
+        self.indexBox = {}
+
+    def addResource(self, path, isFile, tagger):
+        resource = File(path, tagger) if isFile else Folder(path, tagger)
+        self.resources.append(resource)
+        self.indexBox[path] = resource
+        return resource
+
+    def registerResource(self, path, isFile=None, tagger=None):
+        path = os.path.abspath(path)
+        if path in self.indexBox:
+            return self.indexBox[path]
+        else:
+            if isFile is None:
+                isFile = os.path.isfile(path)
+            return self.addResource(path, tagger)
+
+
 class BaseResource(object):
 
     """Base file/folder resource class"""
 
-    def __init__(self, path, isFile):
+    def __init__(self, path, isFile, tagger=None):
         self.path = os.path.abspath(path)
         self.basename = os.path.basename(path)
-        self.taggerPath = os.path.dirname(self.path) if isFile else self.path
-        taggerManager = FileTagger.getInstance().taggerManager
-        self.tagger = taggerManager.registerTagger(self.taggerPath)
+
+        if not tagger:
+            taggerPath = os.path.dirname(self.path) if isFile else self.path
+            taggerManager = FileTagger.getInstance().taggerManager
+            self.tagger = taggerManager.registerTagger(taggerPath)
+        else:
+            self.tagger = tagger
 
     def save(self):
         pass
@@ -298,21 +327,21 @@ class File(BaseResource):
 
     """File resource class"""
 
-    def __init__(self, path):
-        super(File, self).__init__(path, True)
+    def __init__(self, path, tagger=None):
+        super(File, self).__init__(path, True, tagger)
         self.tags = self.tagger.getTags(self.basename)
 
     def save(self):
-        pass
+        self.tagger.setTags(self.basename, self.tags)
 
 
 class Folder(BaseResource):
 
     """Folder resource class"""
 
-    def __init__(self, path):
-        super(File, self).__init__(path, False)
+    def __init__(self, path, tagger=None):
+        super(File, self).__init__(path, False, tagger)
         self.tags = self.tagger.getDirTags()
 
     def save(self):
-        pass
+        self.tagger.setDirTags(self.tags)
