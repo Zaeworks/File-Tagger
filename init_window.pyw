@@ -13,7 +13,6 @@ if __name__ == "__main__":
     argv = sys.argv
     FILEPATH = argv[0]
     app = QtWidgets.QApplication(sys.argv)
-    print(app.libraryPaths())
     app.addLibraryPath(".")
     if argv[1:] and argv[1] == '-a':
         isFile = True if argv[2] == '-f' else False
