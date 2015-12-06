@@ -40,7 +40,7 @@ def reg(path):
     key = winreg.CreateKey(key, "Command")
     winreg.SetValue(key, "", 1, command)
 
-    command = "{run} manage %V".format(run=runPath)
+    command = "{run} -m %V".format(run=runPath)
     key = winreg.OpenKey(
         winreg.HKEY_CLASSES_ROOT, "Directory\Background\shell")
     key = winreg.CreateKey(key, "File Tagger")
