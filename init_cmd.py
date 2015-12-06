@@ -17,10 +17,9 @@ def search(args=None):
         if args[0] == "--or":
             mode = "or"
             args = args[1:]
-        fileList = fileTagger.FileTagger.getInstance().search(args, mode)
+        fileList = FileTagger.search(args, mode)
         makeTempList(fileList)
 
-        # print(" > ----------------------------------")
         for i, path in tempList.items():
             print("[{index}]{name} > {path}".format(
                 index=i, name=os.path.basename(path), path=path))
@@ -32,20 +31,23 @@ def search(args=None):
 
 def quickadd(path):
     # path = path.encode('gbk', 'ignore').decode('gbk') -- 弥天巨坑之编码
-    os.system("title FileTagger - " + path)
-    print("快速标签 > " + os.path.basename(translate(path)))
+    resource = FileTagger.getBaseResource(path, True)
+    os.system("title FileTagger - " + resource.path)
+    print("快速标签 > " + translate(resource.basename))
     print("多个标签用空格隔开,如移除标签请使用--r参数")
+    resource.getTags() and print("当前标签: " + ', '.join(resource.getTags()))
     tags = getVaildInput("请输入标签:")
     add, tags = (False, tags[1:]) if tags[0] == "--r" else (True, tags)
-    [FileTagger.setTagToFile(path, tag, add) for tag in tags]
+    [resource.setTag(tag, add) for tag in tags]
+    resource.save()
     input("操作完毕,按回车键退出")
 
 
 def addDirTag(tags=None):
     if tags:
         add, tags = (False, tags[1:]) if tags[0] == "--r" else (True, tags)
-        path = os.path.abspath("")
-        [FileTagger.setTagToDir(path, tag, add) for tag in tags]
+        [folderResource.setTag(tag, add) for tag in tags]
+        folderResource.save()
         print("操作完毕.")
     else:
         print("使用 > tag (--r) 标签1 (标签2) (...)")
@@ -109,8 +111,7 @@ if __name__ == "__main__":
     FILEPATH = argv[0]
     os.system("title File Tagger")
     if argv[1:] and argv[1] == "-a" and argv[2] == '-f':
-        # quickadd(argv[3], True if argv[2] == "file" else False)
-        quickadd(' '.join(argv[2:]))
+        quickadd(' '.join(argv[3:]))
     else:
         if argv[1:] and argv[1] == "-m":
             currentPath = ' '.join(argv[2:])
@@ -121,5 +122,9 @@ if __name__ == "__main__":
         print(" > File Tagger - 管理目录")
         print(" > Author: 扎易@Zaeworks")
         print(" > 输入help查看帮助")
+        folderResource = FileTagger.getBaseResource(currentPath, False)
+        tags = folderResource.getTags()
+        if tags:
+            print("当前目录标签: " + ', '.join(tags))
         while cmdControl() is not True:
             pass
