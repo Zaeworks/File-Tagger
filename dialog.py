@@ -33,7 +33,6 @@ class ManageDialog(object):
     def __setTagLabel(self):
         tags = self.resource.getDirTags()
         self.tagLabel.setText(', '.join(tags))
-        pass
 
     def __loadUI(self):
         self.dialog = QtWidgets.QDialog()
@@ -157,11 +156,7 @@ class ResultItem(object):
         self.path = path
         self.basename = os.path.basename(path)
         self.isFile = os.path.isfile(path)
-
-        if self.isFile:
-            self.resource = fileTagger.getResource(path)
-        else:
-            self.resource = fileTagger.taggerManager.registerTagger(path)
+        self.resource = fileTagger.getBaseResource(path, self.isFile)
 
         item = QtWidgets.QTreeWidgetItem(self.dialog.searchList)
         item.setText(0, self.basename)
@@ -173,8 +168,7 @@ class ResultItem(object):
         self.item = item
 
     def getTags(self):
-        resource = self.resource
-        return resource.getTags() if self.isFile else resource.getDirTags()
+        return self.resource.getTags()
 
     def updateTags(self):
         self.item.setText(2, ", ".join(self.getTags()))
@@ -191,7 +185,6 @@ class AddTagDialog(object):
         self.pathLabel.setText(self.basename)
         self.pathLabel.setToolTip(self.basename)
 
-        self.isFile = isFile
         self.resource = fileTagger.getBaseResource(path, isFile)
         tags = self.resource.getTags()
         [self.addItem(tag) for tag in tags]
