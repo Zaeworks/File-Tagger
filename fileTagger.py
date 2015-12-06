@@ -344,7 +344,7 @@ class Folder(BaseResource):
     """Folder resource class"""
 
     def __init__(self, path, tagger=None):
-        super(File, self).__init__(path, False, tagger)
+        super(Folder, self).__init__(path, False, tagger)
         self.tags = self.tagger.getDirTags()
 
     def save(self):
