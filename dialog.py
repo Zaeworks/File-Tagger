@@ -192,13 +192,8 @@ class AddTagDialog(object):
         self.pathLabel.setToolTip(self.basename)
 
         self.isFile = isFile
-        if isFile:
-            self.resource = fileTagger.getResource(path)
-            tags = self.resource.getTags()
-        else:
-            self.resource = fileTagger.taggerManager.registerTagger(path)
-            tags = self.resource.getDirTags()
-
+        self.resource = fileTagger.getBaseResource(path, isFile)
+        tags = self.resource.getTags()
         [self.addItem(tag) for tag in tags]
 
     # 加载由pyuic5转换来的ui_add.py
@@ -271,9 +266,5 @@ class AddTagDialog(object):
         n = self.tagList.topLevelItemCount()
         items = [self.tagList.topLevelItem(i) for i in range(0, n)]
         [item.checkState(0) and tags.append(item.text(0)) for item in items]
-
-        if self.isFile:
-            self.resource.setTags(tags)
-        else:
-            self.resource.setDirTags(tags)
+        self.resource.setTags(tags)
         self.resource.save()
