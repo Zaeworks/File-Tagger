@@ -23,7 +23,7 @@ def regedit(act, path=None):
 
 
 def reg(path):
-    runPath = "python " if path[-3:] == ".py" else ""
+    runPath = "python " if path[-4:] == ".pyw" else ""
     runPath += '"{path}"'.format(path=path)
 
     command = "{run} -a -f %1".format(run=runPath)
