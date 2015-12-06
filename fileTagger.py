@@ -33,6 +33,7 @@ class FileTagger(object):
         self.taggerManager = TaggerManager()
         self.tagManager = TagManager()
         self.resourceManager = ResourceManager()
+        self.baseResourceManager = BaseResourceManager()
         FileTagger.instance = self
 
     def setTagToFile(self, path, tag, add=True):
@@ -60,6 +61,9 @@ class FileTagger(object):
             tagger = self.taggerManager.registerTagger(dirname)
             fileRes = self.resourceManager.registerResource(path, tagger)
             return fileRes
+
+    def getBaseResource(self, path, isFile=None, tagger=None):
+        return self.baseResourceManager.registerResource(path, isFile, tagger)
 
     def getInstance():
         return FileTagger.instance if FileTagger.instance else FileTagger()
@@ -288,7 +292,7 @@ class BaseResourceManager(object):
         else:
             if isFile is None:
                 isFile = os.path.isfile(path)
-            return self.addResource(path, tagger)
+            return self.addResource(path, isFile, tagger)
 
 
 class BaseResource(object):
