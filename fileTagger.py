@@ -32,20 +32,8 @@ class FileTagger(object):
         super(FileTagger, self).__init__()
         self.taggerManager = TaggerManager()
         self.tagManager = TagManager()
-        self.resourceManager = ResourceManager()
         self.baseResourceManager = BaseResourceManager()
         FileTagger.instance = self
-
-    def setTagToFile(self, path, tag, add=True):
-        fileRes = self.getResource(path)
-        if fileRes:
-            fileRes.setTag(tag, add)
-            fileRes.save()
-
-    def setTagToDir(self, path, tag, add=True):
-        tagger = self.taggerManager.registerTagger(path)
-        tagger.setDirTag(tag, add)
-        tagger.save()
 
     def search(self, tags, mode="and", path=None):
         results = []
@@ -53,14 +41,6 @@ class FileTagger(object):
         for tagger in self.taggerManager.getTaggers():
             results.extend(tagger.search(tags, mode))
         return results
-
-    def getResource(self, path):
-        path = os.path.abspath(path)
-        if os.path.isfile(path):
-            dirname, filename = os.path.split(path)
-            tagger = self.taggerManager.registerTagger(dirname)
-            fileRes = self.resourceManager.registerResource(path, tagger)
-            return fileRes
 
     def getBaseResource(self, path, isFile=None, tagger=None):
         return self.baseResourceManager.registerResource(path, isFile, tagger)
@@ -199,65 +179,6 @@ class Tagger(object):
                         break
         path = os.path.dirname(self.__configPath)
         return [os.path.join(path, name) for name in results]
-
-
-class ResourceManager(object):
-
-    """To manage resources"""
-
-    def __init__(self):
-        super(ResourceManager, self).__init__()
-        self.__resources = []
-        self.__indexBox = {}
-
-    def addResource(self, path, tagger):
-        path = os.path.normpath(path)
-        resource = Resource(path, tagger)
-
-        self.__resources.append(resource)
-        self.__indexBox[path] = resource
-        return resource
-
-    def registerResource(self, path, tagger=None):
-        path = os.path.normpath(path)
-        if path in self.__indexBox:
-            return self.__indexBox[path]
-        else:
-            return self.addResource(path, tagger)
-
-
-class Resource(object):
-
-    """Resource(file or folder) for fileTagger"""
-
-    def __init__(self, resPath, tagger):
-        super(Resource, self).__init__()
-        self.tagger = tagger
-        self.path = resPath
-        self.tags = tagger.getTags(resPath)
-
-    def addTag(self, tag):
-        self.setTag(tag)
-
-    def removeTag(self, tag):
-        self.setTag(tag, False)
-
-    def setTag(self, tag, add=True):
-        self.tags.append(tag) if add and not self.hasTag(tag) else False
-        self.tags.remove(tag) if self.hasTag(tag) and not add else False
-
-    def getTags(self):
-        return self.tags.copy()
-
-    def setTags(self, tags):
-        self.tags = tags.copy()
-
-    def hasTag(self, tag):
-        return True if tag in self.tags else False
-
-    def save(self):
-        self.tagger.setTags(self.path, self.tags)
-        self.tagger.save()
 
 
 class TagManager(object):
