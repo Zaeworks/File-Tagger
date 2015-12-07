@@ -5,6 +5,7 @@ import fileTagger
 import sys
 import os
 import reg
+import scanner
 
 tempList = {}
 
@@ -120,6 +121,7 @@ if __name__ == "__main__":
             currentPath = os.path.abspath("")
         os.chdir(currentPath)
         os.system("title File Tagger - " + currentPath)
+        scanner.scan(FileTagger.taggerManager, currentPath)
         print(" > File Tagger - 管理目录")
         print(" > Author: 扎易@Zaeworks")
         print(" > 输入help查看帮助")
