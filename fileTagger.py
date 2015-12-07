@@ -37,7 +37,6 @@ class FileTagger(object):
 
     def search(self, tags, mode="and", path=None):
         results = []
-        self.taggerManager.scanTaggers(path)
         for tagger in self.taggerManager.getTaggers():
             results.extend(tagger.search(tags, mode))
         return results
@@ -59,17 +58,6 @@ class TaggerManager(object):
         super(TaggerManager, self).__init__()
         self.__taggers = []
         self.__indexBox = {}
-
-    def scanTaggers(self, path=None):
-        count = 0
-        path = path if path else os.path.abspath("")
-        for currentDir, dirname, filename in os.walk(path):
-            if TaggerManager.defaultConfig in filename:
-                taggerPath = os.path.join(
-                    currentDir, TaggerManager.defaultConfig)
-                self.registerTagger(taggerPath)
-                count = count + 1
-        return count
 
     def addTagger(self, filename):
         filename = os.path.normpath(filename)

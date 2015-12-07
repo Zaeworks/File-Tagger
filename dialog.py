@@ -4,6 +4,7 @@ import os
 import sys
 import fileTagger
 import reg
+import scanner
 
 fileTagger = fileTagger.FileTagger.getInstance()
 
@@ -13,6 +14,7 @@ class ManageDialog(object):
     """docstring for ManageDialog"""
 
     def __init__(self, path):
+        scanner.scan(fileTagger.taggerManager, path, self.event_scanFinished)
         self.path = path
         self.basename = os.path.basename(path)
         self.__loadUI()
@@ -71,7 +73,6 @@ class ManageDialog(object):
 
         self.regBox = window.regBox
         registered, permission = reg.check()
-        print(registered, permission)
         if permission:
             self.regBox.setEnabled(True)
             self.regBox.clicked.connect(self.event_reg)
@@ -108,7 +109,6 @@ class ManageDialog(object):
         [w.setEnabled(False)
          for w in [self.editButton, self.manageButton, self.openButton]]
         tagText = self.searchEdit.text()
-        # return() if not tagText else True
         tags = tagText.split()
         mode = self.searchBox.currentText()
         results = fileTagger.search(tags, mode, self.path)
@@ -145,6 +145,9 @@ class ManageDialog(object):
             self.__addTag = AddTagDialog(item.path, item.isFile)
             self.__addTag.dialog.finished.connect(item.updateTags)
             self.__addTag.show()
+
+    def event_scanFinished(self, info):
+        pass
 
 
 class ResultItem(object):
