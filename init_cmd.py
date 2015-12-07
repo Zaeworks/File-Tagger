@@ -29,9 +29,9 @@ def search(args=None):
         print("默认为and模式,输入--or参数使用or模式")
 
 
-def quickadd(path):
+def quickadd(path, isFile=True):
     # path = path.encode('gbk', 'ignore').decode('gbk') -- 弥天巨坑之编码
-    resource = FileTagger.getBaseResource(path, True)
+    resource = FileTagger.getBaseResource(path, isFile)
     os.system("title FileTagger - " + resource.path)
     print("快速标签 > " + translate(resource.basename))
     print("多个标签用空格隔开,如移除标签请使用--r参数")
@@ -110,10 +110,11 @@ if __name__ == "__main__":
     argv = sys.argv
     FILEPATH = argv[0]
     os.system("title File Tagger")
-    if argv[1:] and argv[1] == "-a" and argv[2] == '-f':
-        quickadd(' '.join(argv[3:]))
+    if len(argv) > 3 and argv[1] == "-a":
+        path = ' '.join(argv[3:])
+        quickadd(path, argv[2] == '-f')
     else:
-        if argv[1:] and argv[1] == "-m":
+        if len(argv) > 2 and argv[1] == "-m":
             currentPath = ' '.join(argv[2:])
         else:
             currentPath = os.path.abspath("")
