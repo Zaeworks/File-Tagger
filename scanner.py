@@ -5,12 +5,12 @@ from time import time
 keyword = '.fileTagger'
 
 
-def scanStart(taggerManager, path, callback):
+def scanStart(taggerManager, path, callback=None):
     timecount = time()
     taggers = scanIt(taggerManager, path)
     timecount = time() - timecount
     info = "扫描到 %d 个标签目录, 用时 %.1f秒" % taggers, timecount
-    callback(info)
+    callback and callback(info)
 
 
 def scanIt(taggerManager, path):
