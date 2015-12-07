@@ -31,7 +31,7 @@ def scanIt(taggerManager, path):
         return count
 
 
-def scan(taggerManager, path, callback):
+def scan(taggerManager, path, callback=None):
     t = threading.Thread(
         target=scanStart, args=(taggerManager, path, callback))
     t.start()
