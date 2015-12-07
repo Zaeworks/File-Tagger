@@ -48,6 +48,14 @@ def reg(path):
     key = winreg.CreateKey(key, "Command")
     winreg.SetValue(key, "", 1, command)
 
+    command = "{run} -a -d %V".format(run=runPath)
+    key = winreg.OpenKey(
+        winreg.HKEY_CLASSES_ROOT, "Directory\Background\shell")
+    key = winreg.CreateKey(key, "File Tagger Add")
+    winreg.SetValue(key, "", 1, "添加/移除标签...")
+    key = winreg.CreateKey(key, "Command")
+    winreg.SetValue(key, "", 1, command)
+
 
 def unreg():
     key = winreg.OpenKey(winreg.HKEY_CLASSES_ROOT, "*\shell\File Tagger")
@@ -67,6 +75,13 @@ def unreg():
     key = winreg.OpenKey(
         winreg.HKEY_CLASSES_ROOT, "Directory\Background\shell")
     winreg.DeleteKey(key, "File Tagger")
+
+    key = winreg.OpenKey(
+        winreg.HKEY_CLASSES_ROOT, "Directory\Background\shell\File Tagger Add")
+    winreg.DeleteKey(key, "Command")
+    key = winreg.OpenKey(
+        winreg.HKEY_CLASSES_ROOT, "Directory\Background\shell")
+    winreg.DeleteKey(key, "File Tagger Add")
 
 
 def check():
