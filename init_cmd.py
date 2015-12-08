@@ -7,9 +7,53 @@ import os
 import reg
 import scanner
 
-tempList = {}
+tempList = []
 
 FileTagger = fileTagger.FileTagger.getInstance()
+
+
+def search2(args=None):
+    if not args:
+        print("使用 > search (--or) 标签1 (标签2) (标签3) (...)")
+        print("默认为and模式,输入--or参数使用or模式")
+        return
+    args, mode = (args, 'and') if args[0] != '--or' else (args[1:], 'or')
+    resources = FileTagger.search2(args, mode)
+
+    def makeResourceTree():
+        tree = {}
+        for resource in resources:
+            tagger = resource.tagger
+            tagger not in tree and tree.update({tagger: []})
+            if isinstance(resource, fileTagger.Folder):
+                tree[tagger].insert(0, resource)
+            else:
+                tree[tagger].append(resource)
+        return tree
+
+    global tempList
+    tempList = []
+    tree = makeResourceTree()
+    for tagger in tree.values():
+        treePath = os.path.relpath(tagger[0].path)
+        if len(tagger) == 1:
+            print("[%d]%s" % (len(tempList), treePath))
+            tempList.append(tagger[0])
+        else:
+            if isinstance(tagger[0], fileTagger.Folder):
+                print("[%d]%s:" % (len(tempList), treePath))
+                tempList.append(tagger[0])
+                tagger = tagger[1:]
+            else:
+                print("%s:" % os.path.dirname(treePath))
+
+            for res in tagger:
+                print("        [%d]%s" % (len(tempList), res.basename))
+                tempList.append(res)
+    if tempList:
+        print(" > --- 输入open [编号] 打开相应资源 ---")
+    else:
+        print(" > --- 无结果 ---")
 
 
 def search(args=None):
@@ -60,15 +104,15 @@ def cmdControl():
     if cmd[0] == "tag":
         addDirTag(cmd[1:])
     elif cmd[0] == "search":
-        search(cmd[1:])
+        search2(cmd[1:])
     elif cmd[0] == "open":
-        index = int(cmd[1])
-        if index in tempList.keys():
-            if os.path.isfile(tempList[index]):
-                os.popen(tempList[index])
+        index = int(cmd[1]) if cmd[1].isnumeric() else -1
+        if 0 <= index < len(tempList):
+            path = tempList[index].path
+            if tempList[index].isFile:
+                os.popen(path)
             else:
-                os.popen(
-                    "explorer.exe /e, {path}".format(path=tempList[index]))
+                os.popen("explorer.exe /e, {path}".format(path=path))
     elif cmd[0] == "reg" or cmd[0] == "unreg":
         if cmd[0] == "reg":
             result, info = reg.regedit(reg.reg, os.path.abspath(FILEPATH))
