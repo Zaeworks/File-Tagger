@@ -111,8 +111,8 @@ class ManageDialog(object):
         tagText = self.searchEdit.text()
         tags = tagText.split()
         mode = self.searchBox.currentText()
-        results = fileTagger.search(tags, mode, self.path)
-        [ResultItem(self, path) for path in results]
+        results = fileTagger.search2(tags, mode)
+        [ResultItem(self, resource) for resource in results]
 
     def __getResultItem(self):
         item = self.searchList.selectedItems()
@@ -154,16 +154,16 @@ class ResultItem(object):
 
     """docstring for ResultItem"""
 
-    def __init__(self, dialog, path):
+    def __init__(self, dialog, resource):
         self.dialog = dialog
-        self.path = path
-        self.basename = os.path.basename(path)
-        self.isFile = os.path.isfile(path)
-        self.resource = fileTagger.getBaseResource(path, self.isFile)
+        self.path = resource.path
+        self.basename = resource.basename
+        self.isFile = resource.isFile
+        self.resource = resource
 
         item = QtWidgets.QTreeWidgetItem(self.dialog.searchList)
         item.setText(0, self.basename)
-        item.setToolTip(0, path)
+        item.setToolTip(0, self.path)
         item.setText(1, "文件" if self.isFile else "文件夹")
         item.setText(2, ", ".join(self.getTags()))
 

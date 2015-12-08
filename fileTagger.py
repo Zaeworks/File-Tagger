@@ -41,6 +41,12 @@ class FileTagger(object):
             results.extend(tagger.search(tags, mode))
         return results
 
+    def search2(self, tags, mode="and"):
+        results = []
+        for tagger in self.taggerManager.getTaggers():
+            results.extend(tagger.search2(tags, mode))
+        return results
+
     def getBaseResource(self, path, isFile=None, tagger=None):
         return self.baseResourceManager.registerResource(path, isFile, tagger)
 
@@ -168,6 +174,21 @@ class Tagger(object):
         path = os.path.dirname(self.__configPath)
         return [os.path.join(path, name) for name in results]
 
+    def search2(self, keytags, mode='and'):
+        keytags = [keytags] if isinstance(keytags, str) else keytags
+
+        def matchAnd(tags): return set(keytags).issubset(set(tags))
+
+        def matchOr(tags): return True in [tag in tags for tag in keytags]
+
+        match = matchAnd if mode == 'and' else matchOr
+        results, dirpath = [], os.path.dirname(self.__configPath)
+        match(self.__tags) and results.append(Folder(dirpath, self))
+        for f in self.__config.options("Tags"):
+            if match(self.getTags(f)):
+                results.append(File(os.path.join(dirpath, f), self))
+        return results
+
 
 class TagManager(object):
 
@@ -211,6 +232,7 @@ class BaseResource(object):
     def __init__(self, path, isFile, tagger=None):
         self.path = os.path.abspath(path)
         self.basename = os.path.basename(path)
+        self.isFile = isFile
 
         if not tagger:
             taggerPath = os.path.dirname(self.path) if isFile else self.path
