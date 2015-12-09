@@ -12,13 +12,13 @@ tempList = []
 FileTagger = fileTagger.FileTagger.getInstance()
 
 
-def search2(args=None):
+def search(args=None):
     if not args:
         print("使用 > search (--or) 标签1 (标签2) (标签3) (...)")
         print("默认为and模式,输入--or参数使用or模式")
         return
     args, mode = (args, 'and') if args[0] != '--or' else (args[1:], 'or')
-    resources = FileTagger.search2(args, mode)
+    resources = FileTagger.search(args, mode)
 
     def makeResourceTree():
         tree = {}
@@ -56,24 +56,6 @@ def search2(args=None):
         print(" > --- 无结果 ---")
 
 
-def search(args=None):
-    if args:
-        mode = "and"
-        if args[0] == "--or":
-            mode = "or"
-            args = args[1:]
-        fileList = FileTagger.search(args, mode)
-        makeTempList(fileList)
-
-        for i, path in tempList.items():
-            print("[{index}]{name} > {path}".format(
-                index=i, name=os.path.basename(path), path=path))
-        print(" > --- 输入open [编号] 打开相应资源 ---")
-    else:
-        print("使用 > search (--or) 标签1 (标签2) (标签3) (...)")
-        print("默认为and模式,输入--or参数使用or模式")
-
-
 def quickadd(path, isFile=True):
     # path = path.encode('gbk', 'ignore').decode('gbk') -- 弥天巨坑之编码
     resource = FileTagger.getBaseResource(path, isFile)
@@ -104,7 +86,7 @@ def cmdControl():
     if cmd[0] == "tag":
         addDirTag(cmd[1:])
     elif cmd[0] == "search":
-        search2(cmd[1:])
+        search(cmd[1:])
     elif cmd[0] == "open":
         index = int(cmd[1]) if cmd[1].isnumeric() else -1
         if 0 <= index < len(tempList):

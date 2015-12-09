@@ -111,7 +111,7 @@ class ManageDialog(object):
         tagText = self.searchEdit.text()
         tags = tagText.split()
         mode = self.searchBox.currentText()
-        results = fileTagger.search2(tags, mode)
+        results = fileTagger.search(tags, mode)
         [ResultItem(self, resource) for resource in results]
 
     def __getResultItem(self):

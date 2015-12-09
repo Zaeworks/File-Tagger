@@ -35,16 +35,10 @@ class FileTagger(object):
         self.baseResourceManager = BaseResourceManager()
         FileTagger.instance = self
 
-    def search(self, tags, mode="and", path=None):
+    def search(self, tags, mode="and"):
         results = []
         for tagger in self.taggerManager.getTaggers():
             results.extend(tagger.search(tags, mode))
-        return results
-
-    def search2(self, tags, mode="and"):
-        results = []
-        for tagger in self.taggerManager.getTaggers():
-            results.extend(tagger.search2(tags, mode))
         return results
 
     def getBaseResource(self, path, isFile=None, tagger=None):
@@ -151,30 +145,7 @@ class Tagger(object):
     def getDirTags(self):
         return self.__tags.copy()
 
-    def search(self, tags, mode="and"):
-        if isinstance(tags, str):
-            tags = [tags]
-        results = []
-        if mode == "and":
-            if set(tags).issubset(set(self.__tags)):
-                results.append(os.path.dirname(self.__configPath))
-            for name in self.__config.options("Tags"):
-                if set(tags).issubset(set(self.getTags(name))):
-                    results.append(name)
-        elif mode == "or":
-            for tag in self.__tags:
-                if tag in tags:
-                    results.append(os.path.dirname(self.__configPath))
-                    break
-            for name in self.__config.options("Tags"):
-                for tag in self.getTags(name):
-                    if tag in tags:
-                        results.append(name)
-                        break
-        path = os.path.dirname(self.__configPath)
-        return [os.path.join(path, name) for name in results]
-
-    def search2(self, keytags, mode='and'):
+    def search(self, keytags, mode='and'):
         keytags = [keytags] if isinstance(keytags, str) else keytags
 
         def matchAnd(tags): return set(keytags).issubset(set(tags))
