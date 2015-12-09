@@ -210,7 +210,7 @@ class AddTagDialog(object):
         self.addButton.clicked.connect(self.event_add)
         self.saveButton.clicked.connect(self.dialog.accept)
         self.tagList.itemDoubleClicked[
-            'QTreeWidgetItem*', 'int'].connect(self.event_toggle)  # 见到这种语句也是醉了
+            'QListWidgetItem*'].connect(self.event_toggle)  # 见到这种语句也是醉了
         self.dialog.finished.connect(self.event_save)
 
     def getItem(self, tag):
@@ -218,13 +218,13 @@ class AddTagDialog(object):
         if item:
             return item[0]
         else:
-            return QtWidgets.QTreeWidgetItem(self.tagList)
+            return QtWidgets.QListWidgetItem(self.tagList)
 
     def addItem(self, tag, checked=True):
         checked = QtCore.Qt.Checked if checked else QtCore.Qt.Unchecked
         item = self.getItem(tag)
-        item.setCheckState(0, checked)
-        item.setText(0, tag)
+        item.setCheckState(checked)
+        item.setText(tag)
         self.focus(item)
         return item
 
@@ -232,8 +232,8 @@ class AddTagDialog(object):
         self.dialog.show()
 
     def focus(self, item):
-        n = self.tagList.topLevelItemCount()
-        items = [self.tagList.topLevelItem(i) for i in range(0, n)]
+        n = self.tagList.count()
+        items = [self.tagList.item(i) for i in range(0, n)]
 
         [i.setSelected(False) for i in items]
         item.setSelected(True)
@@ -244,12 +244,12 @@ class AddTagDialog(object):
 
     def event_toggle(self):
         item = self.tagList.selectedItems()[0]
-        checked = item.checkState(0)
+        checked = item.checkState()
         if checked == QtCore.Qt.Checked:
             checked = QtCore.Qt.Unchecked
         else:
             checked = QtCore.Qt.Checked
-        item.setCheckState(0, checked)
+        item.setCheckState(checked)
 
     def event_add(self):
         tag = self.tagEdit.text()
@@ -259,8 +259,8 @@ class AddTagDialog(object):
 
     def event_save(self):
         tags = []
-        n = self.tagList.topLevelItemCount()
-        items = [self.tagList.topLevelItem(i) for i in range(0, n)]
-        [item.checkState(0) and tags.append(item.text(0)) for item in items]
+        n = self.tagList.count()
+        items = [self.tagList.item(i) for i in range(0, n)]
+        [item.checkState() and tags.append(item.text()) for item in items]
         self.resource.setTags(tags)
         self.resource.save()
