@@ -56,27 +56,27 @@ class TaggerManager(object):
 
     def __init__(self):
         super(TaggerManager, self).__init__()
-        self.__taggers = []
-        self.__indexBox = {}
+        self.taggers = []
+        self.indexBox = {}
 
     def addTagger(self, filename):
         filename = os.path.normpath(filename)
         tagger = Tagger(filename)
-        self.__taggers.append(tagger)
-        self.__indexBox[filename] = tagger
+        self.taggers.append(tagger)
+        self.indexBox[filename] = tagger
         return tagger
 
     def registerTagger(self, path):
         if os.path.isdir(path):
             path = os.path.join(path, TaggerManager.defaultConfig)
         path = os.path.normpath(path)
-        if path in self.__indexBox:
-            return self.__indexBox[path]
+        if path in self.indexBox:
+            return self.indexBox[path]
         else:
             return self.addTagger(path)
 
     def getTaggers(self):
-        return self.__taggers.copy()
+        return self.taggers.copy()
 
 
 class Tagger(object):
@@ -86,12 +86,12 @@ class Tagger(object):
     def __init__(self, filename=None):
         super(Tagger, self).__init__()
         config = configparser.ConfigParser()
+        self.config = config
         if filename:
-            self.__configPath = filename
+            self.configPath = filename
             if os.path.isfile(filename):
                 config.read(filename)
         self.__fixConfig(config)
-        self.__config = config
         self.__loadDirTags()
 
     def __fixConfig(self, config):
@@ -99,37 +99,36 @@ class Tagger(object):
             config.add_section("Folder")
         if not config.has_section("Tags"):
             config.add_section("Tags")
-        # path = os.path.abspath(self.__configPath)
+        # path = os.path.abspath(self.configPath)
         # os.popen("attrib +h {path}".format(path=path))
         # if hide it, you need permission to edit the file
 
     def __loadDirTags(self):
-        if self.__config.has_option("Folder", "Tags"):
-            tags = self.__config.get("Folder", "Tags")
+        if self.config.has_option("Folder", "Tags"):
+            tags = self.config.get("Folder", "Tags")
             self.__tags = TagManager.parse(tags)
         else:
             self.__tags = []
 
     def save(self, path=None):
         dirTags = TagManager.convert(self.__tags)
-        self.__config.set("Folder", "Tags", dirTags)
-        path = path if path else self.__configPath
-        self.__config.write(open(path, "w"))
+        self.config.set("Folder", "Tags", dirTags)
+        path = path if path else self.configPath
+        self.config.write(open(path, "w"))
 
     def getTags(self, filename):
         filename = os.path.basename(filename)
-        if self.__config.has_option("Tags", filename):
-            return TagManager.parse(self.__config.get("Tags", filename))
+        if self.config.has_option("Tags", filename):
+            return TagManager.parse(self.config.get("Tags", filename))
         else:
             return []
 
     def setTags(self, filename, tags):
-        filename = os.path.basename(filename)
-        if isinstance(tags, (str)):
-            self.__config.set("Tags", filename, tags)
-        elif isinstance(tags, (list)):
-            tagText = TagManager.convert(tags)
-            self.__config.set("Tags", filename, tagText)
+        tagText = TagManager.convert(tags)
+        if tagText:
+            self.config.set("Tags", filename, tagText)
+        elif self.config.has_option("Tags", filename):
+            self.config.remove_option("Tags", filename)
         self.save()
 
     def setDirTag(self, tag, add=True):
@@ -153,9 +152,9 @@ class Tagger(object):
         def matchOr(tags): return True in [tag in tags for tag in keytags]
 
         match = matchAnd if mode == 'and' else matchOr
-        results, dirpath = [], os.path.dirname(self.__configPath)
+        results, dirpath = [], os.path.dirname(self.configPath)
         match(self.__tags) and results.append(Folder(dirpath, self))
-        for f in self.__config.options("Tags"):
+        for f in self.config.options("Tags"):
             if match(self.getTags(f)):
                 results.append(File(os.path.join(dirpath, f), self))
         return results
