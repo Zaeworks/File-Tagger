@@ -239,8 +239,11 @@ class AddTagDialog(object):
         item.setSelected(True)
 
         index = items.index(item)
-        pos = 0 if index <= 6 else index - 6
-        self.tagList.verticalScrollBar().setValue(pos)
+        # pos = 0 if index <= 7 else index - 7
+        pos = self.tagList.verticalScrollBar().value()
+        offset = 0 if pos <= index <= pos + 7 else index - pos
+        offset += -7 if index > pos + 7 else 0
+        self.tagList.verticalScrollBar().setValue(pos + offset)
 
     def event_toggle(self):
         item = self.tagList.selectedItems()[0]
