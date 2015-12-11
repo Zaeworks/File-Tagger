@@ -46,6 +46,7 @@ class ManageDialog(object):
         self.pathLabel = window.pathLabel
         self.tagLabel = window.tagLabel
         self.tagEditLabel = window.tagEditLabel
+        self.msgLabel = window.msgLabel
 
         self.tagEditLabel.linkActivated['QString'].connect(self.event_editTag)
 
@@ -98,6 +99,9 @@ class ManageDialog(object):
     def show(self):
         self.dialog.show()
 
+    def setMsg(self, msg):
+        self.msgLabel.setText(msg)
+
     def event_editTag(self):
         self.__addTag = AddTagDialog(self.path, False)
         self.__addTag.dialog.finished.connect(self.__setTagLabel)
@@ -112,6 +116,7 @@ class ManageDialog(object):
         tags = tagText.split()
         mode = self.searchBox.currentText()
         results = fileTagger.search(tags, mode)
+        self.setMsg("搜索到%d处资源:" % len(results))
         [ResultItem(self, resource) for resource in results]
 
     def __getResultItem(self):
@@ -147,7 +152,7 @@ class ManageDialog(object):
             self.__addTag.show()
 
     def event_scanFinished(self, info):
-        pass
+        self.setMsg(info)
 
 
 class ResultItem(object):
