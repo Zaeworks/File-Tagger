@@ -260,9 +260,9 @@ class AddTagDialog(object):
         item.setCheckState(checked)
 
     def event_add(self):
-        tag = self.tagEdit.text()
-        if tag:
-            self.addItem(tag)
+        tagText = self.tagEdit.text()
+        if tagText:
+            [self.addItem(tag) for tag in filter(None, tagText.split(' '))]
             self.tagEdit.setText('')
 
     def event_save(self):
