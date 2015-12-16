@@ -115,6 +115,8 @@ class Tagger(object):
         self.config.set("Folder", "Tags", dirTags)
         path = path if path else self.configPath
         self.config.write(open(path, "w"))
+        if not self.__tags and not self.config.options("Tags"):
+            os.remove(path)
 
     def getTags(self, filename):
         filename = os.path.basename(filename)
